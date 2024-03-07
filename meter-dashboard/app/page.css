@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 60px;
+  
+}
+
+.status{
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.status-body{
+  display: flex;
+  flex-direction: row;
+  font-weight: 400;
+  border-style: solid;
+  width: 70%;
+  height: 200px;
+}
+
+.status-block{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 100px;
+  padding: 20px;
+  border-style: solid;
+  height: 40px;
+  width: 310px;
+  border-radius: 10px;
+}
+
+.meter{
+  display: flex;
+  border-style: solid;
+}
