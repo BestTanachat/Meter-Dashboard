@@ -4,7 +4,7 @@ import {InfluxDBClient, Point} from '@influxdata/influxdb3-client'
 export const GET = async () => {
   try {
     const client = new InfluxDBClient({
-      host: process.env.INFLUX_URL,
+      host: "https://us-east-1-1.aws.cloud2.influxdata.com",
       token: process.env.INFLUX_TOKEN,
     });
 
@@ -16,7 +16,7 @@ export const GET = async () => {
     ("temperature" IS NOT NULL)`;
 
     const response = [];
-    const rows = await client.query(query, process.env.INFLUX_BUCKET);
+    const rows = await client.query(query, 'Meter_Dashboard');
     for await (const row of rows) {
       const temperature = row.temperature || '';
       response.push({ temperature:temperature});
