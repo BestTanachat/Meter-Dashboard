@@ -30,7 +30,7 @@ export const GET = async () => {
     });
   } catch (error) {
     console.error(error);
-    return new Response('Server Error', {
+    return new Response(error, {
       status: 500,
     });
   }
