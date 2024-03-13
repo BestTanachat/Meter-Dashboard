@@ -53,10 +53,10 @@ export default function Home() {
       <div className="body">
         <div className="status-body">
           <div className="status-block">
-          {data.temperature ? (data.temperature) : '- '} °C
+          {data.temperature ? (data.temperature).toFixed(2) : '- '} °C
           </div>
           <div className="status-block">
-          {data.temperature ? ((data.temperature * 1.8) + 32) : '- '} °F
+          {data.temperature ? ((data.temperature * 1.8) + 32).toFixed(2) : '- '} °F
           </div>
           <div className="status-block">
             {time.toLocaleTimeString()}
