@@ -12,12 +12,6 @@ export default function Home() {
     error: null,
   });
 
-  // const getData = async () => {
-  //   const fetch = await fetchData()
-  //   setData(fetch)
-  //   console.log(data)
-  // }
-
   const getData = async () => {
     try {
       const fetch = await fetchData()
@@ -49,7 +43,10 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h1 className='header'>Meter Dashboard</h1>
+      <div className="left-body">
+        <h1 className='header'>Meter Dashboard</h1>
+      </div>
+      <div>
       <div className="body">
         <div className="status-body">
           <div className="status-block">
@@ -74,6 +71,7 @@ export default function Home() {
             <div className='meter-block'>4</div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
