@@ -53,10 +53,10 @@ export default function Home() {
       <div className="body">
         <div className="status-body">
           <div className="status-block">
-          {(data.temperature).toFixed(2)} °C
+          {data.temperature ? (data.temperature) : '- '} °C
           </div>
           <div className="status-block">
-          {((data.temperature * 1.8) + 32).toFixed(2)} °F
+          {data.temperature ? ((data.temperature * 1.8) + 32) : '- '} °F
           </div>
           <div className="status-block">
             {time.toLocaleTimeString()}
@@ -65,7 +65,14 @@ export default function Home() {
       </div>
       <div className="body">
         <div className="meter-body">
-        
+          <div className='sub-meter-body'>
+            <div className='meter-block'>1</div>
+            <div className='meter-block'>2</div>
+          </div>
+          <div className='sub-meter-body'> 
+            <div className='meter-block'>3</div>
+            <div className='meter-block'>4</div>
+          </div>
         </div>
       </div>
     </div>

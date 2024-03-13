@@ -10,10 +10,13 @@
   display: flex;
   flex-direction: column;
   padding: 60px;
+  width: 100%;
 }
 
 .header{
-  align-items: flex-start;
+  position: relative;
+  display: flex;
+  padding-left: 10%;
 }
 
 .body{
@@ -26,12 +29,11 @@
   background-color: #D9D9D9;
   display: flex;
   flex-direction: row;
-  margin-top: 50px;
-  font-weight: 400;
-  border-style: solid;
-  align-items: center;
+  border-radius: 10px;
+  margin-top: 40px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;  align-items: center;
   justify-content: center;
-  width: 70%;
+  width: 1000px;
   height: 200px;
 }
 
@@ -40,24 +42,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 100px;
+  margin-left: 50px;
   padding: 10px;
-  border-style: solid;
   height: 40px;
-  width: 310px;
+  width: 200px;
   border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
-
 
 .meter-body{
   background-color: #D9D9D9;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   margin-top: 50px;
   font-weight: 400;
-  border-style: solid;
-  align-items: center;
-  justify-content: center;
-  width: 70%;
-  height: 200px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;  
+  width: 1000px;
+  height: 800px;
+}
+
+.sub-meter-body{
+  display: flex;
+  flex-direction: row;
+}
+
+.meter-block{
+  background-color: white;
+  width: 300px;
+  height: 300px;
+  margin: 30px;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 10px;
+
 }
