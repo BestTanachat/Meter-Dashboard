@@ -48,18 +48,36 @@ export const GET = async (request) => {
       token: process.env.INFLUX_TOKEN,
     });
     const queryApi = influxDB.getQueryApi(process.env.INFLUX_ORG);
-    const query = `
+    const query1 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
-    |> range(start: -1d)
-    |> filter(fn: (r) => r._measurement == "wifi_status")
-`;
+    |> range(start: -30d)
+    |> filter(fn: (r) => r._field == "temperature")
+  `;
 
-    const rows = await queryApi.collectRows(query);
+    const rows1 = await queryApi.collectRows(query1);
+
+    const query2 = `
+    from(bucket: "${process.env.INFLUX_BUCKET}")
+    |> range(start: -30d)
+    |> filter(fn: (r) => r._field == "energy")
+  `;
+
+    const rows2 = await queryApi.collectRows(query2);
+
     const response = [];
 
-    for await (const row of rows) {
-      const temperature = row._value || "";
-      response.push({ temperature: temperature });
+    const rowsMap = new Map();
+
+    for await (const row of rows1) {
+      rowsMap.set(row._time, { temperature: row._value });
+    }
+
+    for await (const row of rows2) {
+      const matchingRow = rowsMap.get(row._time);
+      if (matchingRow) {
+        matchingRow.energy = row._value;
+        response.push(matchingRow);
+      }
     }
 
     return new Response(JSON.stringify(response), {
