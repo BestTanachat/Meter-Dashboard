@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@influxdata/influxdb-client": "^1.33.2",
     "@influxdata/influxdb-client-apis": "^1.33.2",
     "@influxdata/influxdb3-client": "^0.7.0",
+    "@mui/material": "^5.15.13",
+    "@mui/x-charts": "^6.19.5",
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
     "lodash.isequal": "^4.5.0",

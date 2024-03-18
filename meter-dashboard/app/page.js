@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 const GaugeComponent = dynamic(() => import("react-gauge-component"), {
   ssr: false,
 });
+import { LineChart } from '@mui/x-charts/LineChart';
 
 export default function Home() {
   const [time, setTime] = useState(new Date());
@@ -190,6 +191,20 @@ export default function Home() {
                 />
               </div>
             </div>
+            <div className="graph">
+            <h3>กราฟกำลังไฟ</h3>
+              <LineChart
+                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                series={[
+                  {
+                    data: [2, 5.5, 2, 8.5, 1.5, 5],
+                  },
+                ]}
+                width={650}
+                height={400}
+              />
+            </div>
+            
           </div>
         </div>
       </div>
