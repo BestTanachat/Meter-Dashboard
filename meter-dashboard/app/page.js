@@ -7,9 +7,12 @@ const GaugeComponent = dynamic(() => import("react-gauge-component"), {
   ssr: false,
 });
 import { LineChart } from '@mui/x-charts/LineChart';
+import Button from '@mui/material/Button';
 
 export default function Home() {
   const [time, setTime] = useState(new Date());
+  const [temperature, setTemperature] = useState(false);
+  const [status, setStatus] = useState(true)
   const [data, setData] = useState({
     temperature: "",
     energy: "",
@@ -45,34 +48,10 @@ export default function Home() {
     return <div className="load-status">Loading...</div>;
   }
 
-  return (
-    <div className="container">
-      <div className="left-body">
-        <h1 className="header">Meter Dashboard</h1>
-        <div className="price">
-          <h3>ค่าไฟเดือนนี้</h3>
-          <div className="price-status">{data.energy} บาท</div>
-        </div>
-      </div>
-      <div className="middle-body">
-        <div>
-          <div className="status-body">
-            <div className="status-block">
-              {data.temperature ? data.temperature.toFixed(2) : "- "} °C
-            </div>
-            <div className="status-block">
-              {data.temperature
-                ? (data.temperature * 1.8 + 32).toFixed(2)
-                : "- "}
-              °F
-            </div>
-            <div className="status-block">{time.toLocaleTimeString()}</div>
-          </div>
-        </div>
-        <div>
-          <div className="meter-body">
-            <div className="sub-meter-body">
-              <div className="meter-block">
+  const gaugeTemperature=(temperature)=>{
+    if (temperature){
+      return (
+        <div className="meter-block">
                 <h3>อุณหภูมิในหน่วยองศาเซลเซียส</h3>
                 <GaugeComponent
                   type="semicircle"
@@ -121,7 +100,11 @@ export default function Home() {
                   maxValue={80}
                 />
               </div>
-              <div className="meter-block">
+      )
+    }
+    else{
+      return (
+        <div className="meter-block">
                 <h3>อุณหภูมิในหน่วยองศาฟาเรนไฮต์</h3>
                 <GaugeComponent
                   type="semicircle"
@@ -174,9 +157,54 @@ export default function Home() {
                   maxValue={176}
                 />
               </div>
+      )
+    }
+  }
+
+  return (
+    <div className="container">
+      <div className="left-body">
+        <h1 className="header">Meter Dashboard</h1>
+        <div className="price">
+          <h3>ค่าไฟเดือนนี้</h3>
+          <div className="price-status">{data.energy} บาท</div>
+        </div>
+      </div>
+      <div className="middle-body">
+        <div>
+          <div className="status-body">
+            <div className="status-block">
+              {data.temperature ? data.temperature.toFixed(2) : "- "} °C
+            </div>
+            <div className="status-block">
+              {data.temperature
+                ? (data.temperature * 1.8 + 32).toFixed(2)
+                : "- "}
+              °F
+            </div>
+            <div className="status-block">{time.toLocaleTimeString()}</div>
+          </div>
+        </div>
+        <div>
+          <div className="meter-body">
+            <div className="button-body">
+              <Button variant="contained" className="button-change" onClick={()=>{setTemperature(prevState => !prevState)}}>เปลี่ยนหน่วย{temperature}</Button>
             </div>
             <div className="sub-meter-body">
-              <div className="meter-block">3</div>
+              <div className="meter-block">
+                <h3>สถานะของอุปกรณ์</h3>
+                <div class="circle"/>
+                {temperature ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
+              </div>
+              {gaugeTemperature(temperature)}
+            </div>
+            <div className="sub-meter-body">
+              <div className="meter-block">
+              <h3>ยูนิตไฟเดือนนี้</h3>
+              <div className="unit">
+              </div>
+              Wh
+              </div>
               <div className="meter-block">
               <h3>กำลังไฟที่ใช้งานอยู่</h3>
                 <GaugeComponent
@@ -194,7 +222,12 @@ export default function Home() {
             <div className="graph">
             <h3>กราฟกำลังไฟ</h3>
               <LineChart
-                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                xAxis={[{ data: [1, 2, 3, 5, 8, 10], 
+                label: "Datetime", 
+                //scaleType: "time",
+                // valueFormatter: (date) => dayjs(date).format("MMM D") 
+                }]}
+                yAxis={[{ label: "Power (W)" }]}
                 series={[
                   {
                     data: [2, 5.5, 2, 8.5, 1.5, 5],
@@ -204,7 +237,9 @@ export default function Home() {
                 height={400}
               />
             </div>
-            
+            <div className="status-update">
+              <h5 className="text-update">ข้อมูลอัปเดตเมื่อ :</h5>
+            </div>
           </div>
         </div>
       </div>
