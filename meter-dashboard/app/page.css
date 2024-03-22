@@ -161,11 +161,15 @@
 }
 
 .unit{
+  display: flex;
   margin-top: 20px;
   margin-bottom: 30px;
-  width: 160px;
+  width: 180px;
   height: 80px;
   background-color: aliceblue;
   border-radius: 20px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
 }

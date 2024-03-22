@@ -1,44 +1,3 @@
-// app/api/data/route.js
-// import {InfluxDBClient} from '@influxdata/influxdb3-client'
-
-// export const GET = async () => {
-//   try {
-//     const client = new InfluxDBClient({
-//       host: "https://us-east-1-1.aws.cloud2.influxdata.com",
-//       token: process.env.INFLUX_TOKEN,
-//     });
-
-//     const query = `SELECT *
-//     FROM "wifi_status"
-//     WHERE
-//     time >= now() - interval '7 days'
-//     AND
-//     ("temperature" IS NOT NULL)`;
-
-//     const response = [];
-//     const rows = await client.query(query, 'Meter_Dashboard');
-//     for await (const row of rows) {
-//       const temperature = row.temperature || '';
-//       response.push({ temperature:temperature});
-//     }
-
-//     client.close()
-
-//     return new Response(JSON.stringify(response), {
-//       status: 200,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return new Response(error, {
-//       status: 500,
-//     });
-//   }
-// };
-
-// app/api/data/route.js
 import { InfluxDB } from "@influxdata/influxdb-client";
 
 export const GET = async (request) => {
@@ -48,9 +7,16 @@ export const GET = async (request) => {
       token: process.env.INFLUX_TOKEN,
     });
     const queryApi = influxDB.getQueryApi(process.env.INFLUX_ORG);
+    
+    // Get the start and end dates of the current month
+    const startDate = new Date();
+    startDate.setDate(1); // Set the date to the 1st day of the month
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1); // Set the date to the 1st day of the next month
+
     const query1 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
-    |> range(start: -30d)
+    |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
     |> filter(fn: (r) => r._field == "temperature")
   `;
 
@@ -58,7 +24,7 @@ export const GET = async (request) => {
 
     const query2 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
-    |> range(start: -30d)
+    |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
     |> filter(fn: (r) => r._field == "energy")
   `;
 
@@ -66,7 +32,7 @@ export const GET = async (request) => {
 
     const query3 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
-    |> range(start: -30d)
+    |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
     |> filter(fn: (r) => r._field == "power")
   `;
 
@@ -77,7 +43,7 @@ export const GET = async (request) => {
     const rowsMap = new Map();
 
     for await (const row of rows1) {
-      rowsMap.set(row._time, { temperature: row._value });
+      rowsMap.set(row._time, { datetime: row._time, temperature: row._value });
     }
 
     for await (const row of rows2) {

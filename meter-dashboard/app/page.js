@@ -1,21 +1,29 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import "./page.css";
-import { fetchData } from "@/lib/actions/fetchData";
+import { fetchData, fetchUnit, fetchpower } from "@/lib/actions/fetchData";
 import dynamic from "next/dynamic";
+
 const GaugeComponent = dynamic(() => import("react-gauge-component"), {
   ssr: false,
 });
 import { LineChart } from '@mui/x-charts/LineChart';
 import Button from '@mui/material/Button';
+import moment from 'moment';
+
 
 export default function Home() {
   const [time, setTime] = useState(new Date());
   const [temperature, setTemperature] = useState(false);
   const [status, setStatus] = useState(true)
+  const [price, setPrice] = useState(0)
+  const [power, setPower] = useState([])
+  const [datetime, setDatetime] = useState([]) 
   const [data, setData] = useState({
     temperature: "",
+    power: "",
     energy: "",
+    datetime: "",
     isloading: true,
     error: null,
   });
@@ -23,8 +31,15 @@ export default function Home() {
   const getData = async () => {
     try {
       const fetch = await fetchData();
-      setData({ ...fetch, isloading: false, error: null });
-      console.log(fetch);
+      const [max, min] = await fetchUnit();
+      const arr = await fetchpower();
+      console.log(arr[0])
+      console.log(arr[1])
+      setPrice((max-min)*8)
+      setData({ ...fetch, datetime: moment(fetch.datetime).format('DD-MM-YYYY HH:mm:ss'), isloading: false, error: null });
+      setPower(arr[0])
+      setDatetime(arr[1])
+      // console.log(fetch);
     } catch (err) {
       setData((prevState) => ({
         ...prevState,
@@ -34,8 +49,25 @@ export default function Home() {
     }
   };
 
+  const isWithinTenMinutes = (datetimeString) => {
+    const datetime = new Date(datetimeString);
+
+    if (isNaN(datetime.getTime())) {
+        return false; 
+    }
+    const now = new Date();
+    now.setHours(now.getHours() + 7);
+    const differenceInMilliseconds = Math.abs(datetime - now);
+    const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+
+    return differenceInMinutes <= 10;
+  }
+
+  const formattedDatetime = datetime.map(dt => moment(dt).toDate());
+
   useEffect(() => {
     const interval = setInterval(() => getData(), 1000);
+    fetchUnit()
     return () => clearInterval(interval);
   }, []);
 
@@ -167,7 +199,7 @@ export default function Home() {
         <h1 className="header">Meter Dashboard</h1>
         <div className="price">
           <h3>ค่าไฟเดือนนี้</h3>
-          <div className="price-status">{data.energy} บาท</div>
+          <div className="price-status">{price ? (price).toFixed(2): 0} บาท</div>
         </div>
       </div>
       <div className="middle-body">
@@ -194,7 +226,7 @@ export default function Home() {
               <div className="meter-block">
                 <h3>สถานะของอุปกรณ์</h3>
                 <div class="circle"/>
-                {temperature ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
+                {isWithinTenMinutes(fetch.datetime) ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
               </div>
               {gaugeTemperature(temperature)}
             </div>
@@ -202,6 +234,7 @@ export default function Home() {
               <div className="meter-block">
               <h3>ยูนิตไฟเดือนนี้</h3>
               <div className="unit">
+                {price ? (price/8).toFixed(2): 0}
               </div>
               Wh
               </div>
@@ -213,7 +246,7 @@ export default function Home() {
                       formatTextValue: (value) => value + " W",
                       style: { fill: "#000" },
                     }}}
-                  value={data.energy}
+                  value={data.power}
                   minValue={0}
                   maxValue={200}
                 />
@@ -222,15 +255,15 @@ export default function Home() {
             <div className="graph">
             <h3>กราฟกำลังไฟ</h3>
               <LineChart
-                xAxis={[{ data: [1, 2, 3, 5, 8, 10], 
+                xAxis={[{ data: formattedDatetime, 
                 label: "Datetime", 
-                //scaleType: "time",
+                scaleType: "time",
                 // valueFormatter: (date) => dayjs(date).format("MMM D") 
                 }]}
                 yAxis={[{ label: "Power (W)" }]}
                 series={[
                   {
-                    data: [2, 5.5, 2, 8.5, 1.5, 5],
+                    data: power,
                   },
                 ]}
                 width={650}
@@ -238,7 +271,7 @@ export default function Home() {
               />
             </div>
             <div className="status-update">
-              <h5 className="text-update">ข้อมูลอัปเดตเมื่อ :</h5>
+              <h5 className="text-update">ข้อมูลอัปเดตเมื่อ : {data.datetime}</h5>
             </div>
           </div>
         </div>
