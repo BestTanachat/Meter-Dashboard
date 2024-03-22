@@ -64,6 +64,14 @@ export const GET = async (request) => {
 
     const rows2 = await queryApi.collectRows(query2);
 
+    const query3 = `
+    from(bucket: "${process.env.INFLUX_BUCKET}")
+    |> range(start: -30d)
+    |> filter(fn: (r) => r._field == "power")
+  `;
+
+    const rows3 = await queryApi.collectRows(query3);
+
     const response = [];
 
     const rowsMap = new Map();
@@ -76,6 +84,14 @@ export const GET = async (request) => {
       const matchingRow = rowsMap.get(row._time);
       if (matchingRow) {
         matchingRow.energy = row._value;
+        response.push(matchingRow);
+      }
+    }
+
+    for await (const row of rows3) {
+      const matchingRow = rowsMap.get(row._time);
+      if (matchingRow) {
+        matchingRow.power = row._value;
         response.push(matchingRow);
       }
     }
