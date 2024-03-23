@@ -1,5 +1,7 @@
 import { InfluxDB } from "@influxdata/influxdb-client";
 
+
+export const dynamic = 'force-dynamic';
 export const GET = async (request) => {
   try {
     const influxDB = new InfluxDB({
