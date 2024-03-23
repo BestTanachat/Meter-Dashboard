@@ -225,7 +225,7 @@ export default function Home() {
             <div className="sub-meter-body">
               <div className="meter-block">
                 <h3>สถานะของอุปกรณ์</h3>
-                <div class="circle"/>
+                <div className={isWithinTenMinutes(fetch.datetime) ? 'circle active' : 'circle'} />
                 {isWithinTenMinutes(fetch.datetime) ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
               </div>
               {gaugeTemperature(temperature)}
@@ -258,15 +258,16 @@ export default function Home() {
                 xAxis={[{ data: formattedDatetime, 
                 label: "Datetime", 
                 scaleType: "time",
-                // valueFormatter: (date) => dayjs(date).format("MMM D") 
+                valueFormatter: (formattedDatetime) => moment(formattedDatetime).format('DD-MM-YYYY HH:mm:ss') 
                 }]}
                 yAxis={[{ label: "Power (W)" }]}
                 series={[
                   {
                     data: power,
+                    line: { connect: false }
                   },
                 ]}
-                width={650}
+                width={600}
                 height={400}
               />
             </div>

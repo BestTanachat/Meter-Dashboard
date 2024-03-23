@@ -156,9 +156,14 @@
   display: flex;
   width: 100px;
   height: 100px;
-  background-color: green;
+  background-color: rgb(214, 25, 25);
   border-radius: 50%;
 }
+
+.active {
+  background-color: rgb(29, 182, 15); /* Change to the desired color */
+}
+
 
 .unit{
   display: flex;
