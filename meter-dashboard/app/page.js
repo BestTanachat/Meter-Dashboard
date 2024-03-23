@@ -276,6 +276,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <di className='right-body'>
+        
+      </di>
     </div>
   );
 }
