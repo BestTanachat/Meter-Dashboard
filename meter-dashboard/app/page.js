@@ -6,13 +6,11 @@ import { fetchData, fetchUnit, fetchpower } from "@/lib/actions/fetchData";
 
 
 const GaugeComponent = dynamic(() => import("react-gauge-component"), {ssr: false});
-
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 import { LineChart } from '@mui/x-charts/LineChart';
 import Button from '@mui/material/Button';
 import moment from 'moment';
-// import ReactApexChart from 'react-apexcharts';
 
 
 export default function Home() {
@@ -47,6 +45,13 @@ export default function Home() {
         error: err.message || "Error fetching data",
       }));
     }
+  };
+
+  const formatTimeTo24Hr = (date) => {
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    return `${hours}:${minutes}:${seconds}`;
   };
 
   const isWithinTenMinutes = (datetimeString) => {
@@ -213,13 +218,13 @@ export default function Home() {
                 : "- "}
               °F
             </div>
-            <div className="status-block">{time.toLocaleTimeString()}</div>
+            <div className="status-block">{formatTimeTo24Hr(time)}</div>
           </div>
         </div>
         <div>
           <div className="meter-body">
             <div className="button-body">
-              <Button variant="contained" className="button-change" onClick={()=>{setTemperature(prevState => !prevState)}}>เปลี่ยนหน่วย{temperature}</Button>
+              <Button variant="contained" className="button-change" onClick={()=>{setTemperature(prevState => !prevState)}}>เปลี่ยนหน่วย</Button>
             </div>
             <div className="sub-meter-body">
               <div className="meter-block">
