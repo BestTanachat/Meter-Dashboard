@@ -1,21 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import "./page.css";
 import { fetchData, fetchUnit, fetchpower } from "@/lib/actions/fetchData";
-import dynamic from "next/dynamic";
 
-const GaugeComponent = dynamic(() => import("react-gauge-component"), {
-  ssr: false,
-});
+
+const GaugeComponent = dynamic(() => import("react-gauge-component"), {ssr: false});
+
+const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
 import { LineChart } from '@mui/x-charts/LineChart';
 import Button from '@mui/material/Button';
 import moment from 'moment';
+// import ReactApexChart from 'react-apexcharts';
 
 
 export default function Home() {
   const [time, setTime] = useState(new Date());
   const [temperature, setTemperature] = useState(false);
-  const [status, setStatus] = useState(true)
   const [price, setPrice] = useState(0)
   const [power, setPower] = useState([])
   const [datetime, setDatetime] = useState([]) 
@@ -78,7 +80,7 @@ export default function Home() {
   }
 
   const gaugeTemperature=(temperature)=>{
-    if (temperature){
+    if (!temperature){
       return (
         <div className="meter-block">
                 <h3>อุณหภูมิในหน่วยองศาเซลเซียส</h3>
@@ -251,7 +253,7 @@ export default function Home() {
             </div>
             <div className="graph">
             <h3>กราฟกำลังไฟ</h3>
-              <LineChart
+              {/* <LineChart
                 xAxis={[{ data: formattedDatetime, 
                 label: "Datetime", 
                 scaleType: "time",
@@ -266,7 +268,8 @@ export default function Home() {
                 ]}
                 width={600}
                 height={400}
-              />
+              /> */}
+              <ApexChart power={power} datetime={datetime}/>
             </div>
             <div className="status-update">
               <h5 className="text-update">ข้อมูลอัปเดตเมื่อ : {data.datetime}</h5>
@@ -279,4 +282,57 @@ export default function Home() {
       </di>
     </div>
   );
+}
+
+class ApexChart extends React.Component {
+  render() {
+    const { power, datetime } = this.props;
+
+    const series = [{
+      name: 'Power',
+      data: power
+    }];
+
+    const options = {
+      chart: {
+        type: 'line',
+        zoom: {
+          type: 'x',
+          enabled: true,
+          autoScaleYaxis: true
+        },
+        toolbar: {
+          autoSelected: 'zoom'
+        },
+      },
+      xaxis: {
+        type: 'datetime',
+        categories: datetime.map(date => moment(date).format('YYYY-MM-DD HH:mm:ss')),
+      },
+      yaxis: {
+        title: {
+          text: 'Power (W)'
+        },
+      },
+      markers: {
+        size: 4,
+        colors:'red',
+        strokeWidth: 1,
+        fillOpacity: 1,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return (val / 1000000).toFixed(0)
+          }
+        }
+      },
+    };
+
+    return (
+      <div>
+        <ReactApexChart options={options} series={series} type="line" height={350} width={600}/>
+      </div>
+    );
+  }
 }
