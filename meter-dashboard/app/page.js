@@ -33,8 +33,6 @@ export default function Home() {
       const fetch = await fetchData();
       const [max, min] = await fetchUnit();
       const arr = await fetchpower();
-      console.log(arr[0])
-      console.log(arr[1])
       setPrice((max-min)*8)
       setData({ ...fetch, datetime: moment(fetch.datetime).format('DD-MM-YYYY HH:mm:ss'), isloading: false, error: null });
       setPower(arr[0])
@@ -67,7 +65,6 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => getData(), 1000);
-    fetchUnit()
     return () => clearInterval(interval);
   }, []);
 

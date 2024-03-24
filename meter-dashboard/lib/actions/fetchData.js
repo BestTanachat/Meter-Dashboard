@@ -10,6 +10,7 @@ export const fetchData = async () => {
     // const chosenField = Object.keys(res.data).find(
     //   (field) => res.data[field].Values.length > 0
     // );
+    console.log(res.data[res.data.length - 1])
 
     return res.data[res.data.length - 1];
   } catch (err) {
