@@ -37,7 +37,6 @@ export default function Home() {
       setData({ ...fetch, datetime: moment(fetch.datetime).format('DD-MM-YYYY HH:mm:ss'), isloading: false, error: null });
       setPower(arr[0])
       setDatetime(arr[1])
-      // console.log(fetch);
     } catch (err) {
       setData((prevState) => ({
         ...prevState,
@@ -324,13 +323,6 @@ class ApexChart extends React.Component {
         colors:'red',
         strokeWidth: 1,
         fillOpacity: 1,
-      },
-      tooltip: {
-        y: {
-          formatter: function (val) {
-            return (val / 1000000).toFixed(0)
-          }
-        }
       },
     };
 
