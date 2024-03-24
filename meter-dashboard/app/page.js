@@ -292,6 +292,15 @@ class ApexChart extends React.Component {
   render() {
     const { power, datetime } = this.props;
 
+    const datetimeInTimeZone = datetime.map(datetime => {
+      const momentObj = moment(datetime);
+  
+      const momentObjAdjusted = momentObj.utcOffset('+14:00');
+  
+      return momentObjAdjusted.format('YYYY-MM-DD HH:mm:ss');
+    });
+    console.log(datetimeInTimeZone[0])
+    
     const series = [{
       name: 'Power',
       data: power
@@ -311,7 +320,7 @@ class ApexChart extends React.Component {
       },
       xaxis: {
         type: 'datetime',
-        categories: datetime.map(date => moment(date).format('YYYY-MM-DD HH:mm:ss')),
+        categories: datetimeInTimeZone,
       },
       yaxis: {
         title: {
