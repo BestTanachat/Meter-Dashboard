@@ -22,7 +22,7 @@ export const fetchUnit = async () => {
     const maxEnergy = Math.max(...filteredData.map(item => item.energy));
     const minEnergy = Math.min(...filteredData.map(item => item.energy));
 
-    return [maxEnergy,minEnergy];
+    return [maxEnergy/1000,minEnergy/1000];
   } else {
     console.log("No energy data available after filtering out 0 values.");
     return null

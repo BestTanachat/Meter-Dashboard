@@ -37,6 +37,7 @@ export default function Home() {
       setData({ ...fetch, datetime: moment(fetch.datetime).format('DD-MM-YYYY HH:mm:ss'), isloading: false, error: null });
       setPower(arr[0])
       setDatetime(arr[1])
+
     } catch (err) {
       setData((prevState) => ({
         ...prevState,
@@ -54,23 +55,21 @@ export default function Home() {
   };
 
   const isWithinTenMinutes = (datetimeString) => {
-    const datetime = new Date(datetimeString);
-
-    if (isNaN(datetime.getTime())) {
-        return false; 
-    }
+    const [datePart, timePart] = datetimeString.split(' ');
+    const [day, month, year] = datePart.split('-').map(Number);
+    const [hour, minute, second] = timePart.split(':').map(Number);
+    const inputDate = new Date(year, month - 1, day, hour, minute, second);
     const now = new Date();
-    now.setHours(now.getHours() + 7);
-    const differenceInMilliseconds = Math.abs(datetime - now);
-    const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
+    const timeDifference = now - inputDate;
+    const minutesDifference = Math.floor(timeDifference / (1000 * 60));
 
-    return differenceInMinutes <= 10;
+    return minutesDifference <= 1;
   }
 
   const formattedDatetime = datetime.map(dt => moment(dt).toDate());
 
   useEffect(() => {
-    const interval = setInterval(() => getData(), 1000);
+    const interval = setInterval(() => getData(), 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -228,8 +227,8 @@ export default function Home() {
             <div className="sub-meter-body">
               <div className="meter-block">
                 <h3>สถานะของอุปกรณ์</h3>
-                <div className={isWithinTenMinutes(fetch.datetime) ? 'circle active' : 'circle'} />
-                {isWithinTenMinutes(fetch.datetime) ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
+                <div className={isWithinTenMinutes(data.datetime) ? 'circle active' : 'circle'} />
+                {isWithinTenMinutes(data.datetime) ? 'อุปกรณ์ทำงานอยู่' : 'อุปกรณ์ไม่ทำงาน'}
               </div>
               {gaugeTemperature(temperature)}
             </div>
@@ -239,7 +238,7 @@ export default function Home() {
               <div className="unit">
                 {price ? (price/8).toFixed(2): 0}
               </div>
-              Wh
+              Unit
               </div>
               <div className="meter-block">
               <h3>กำลังไฟที่ใช้งานอยู่</h3>
@@ -299,7 +298,6 @@ class ApexChart extends React.Component {
   
       return momentObjAdjusted.format('YYYY-MM-DD HH:mm:ss');
     });
-    console.log(datetimeInTimeZone[0])
     
     const series = [{
       name: 'Power',

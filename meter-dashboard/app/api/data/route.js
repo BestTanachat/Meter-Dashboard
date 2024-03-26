@@ -63,7 +63,8 @@ export const GET = async (request) => {
       }
     }
 
-    return new Response(JSON.stringify(response), {
+
+    return new Response(JSON.stringify(response.slice(Math.round(response.length/2))), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
