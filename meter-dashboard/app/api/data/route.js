@@ -1,7 +1,7 @@
 import { InfluxDB } from "@influxdata/influxdb-client";
 
 
-export const GET = async (request) => {
+export const GET = async () => {
   try {
     const influxDB = new InfluxDB({
       url: process.env.INFLUX_URL,
@@ -9,11 +9,10 @@ export const GET = async (request) => {
     });
     const queryApi = influxDB.getQueryApi(process.env.INFLUX_ORG);
     
-    // Get the start and end dates of the current month
-    const startDate = new Date();
-    startDate.setDate(1); // Set the date to the 1st day of the month
-    const endDate = new Date(startDate);
-    endDate.setMonth(endDate.getMonth() + 1); // Set the date to the 1st day of the next month
+    const startDate = new Date()
+    startDate.setDate(1)
+    const endDate = new Date(startDate)
+    endDate.setMonth(endDate.getMonth() + 1)
 
     const query1 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
@@ -68,6 +67,7 @@ export const GET = async (request) => {
       status: 200,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
       },
     });
   } catch (error) {
