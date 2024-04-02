@@ -1,8 +1,12 @@
 import { InfluxDB } from "@influxdata/influxdb-client";
 
 
-export const GET = async () => {
+export const GET = async (request) => {
   try {
+    const searchParams = Object.fromEntries(request.nextUrl.searchParams)
+    const temperature = searchParams.temperature
+    const energy = searchParams.energy
+    const power = searchParams.power
     const influxDB = new InfluxDB({
       url: process.env.INFLUX_URL,
       token: process.env.INFLUX_TOKEN,
@@ -17,7 +21,7 @@ export const GET = async () => {
     const query1 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
     |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
-    |> filter(fn: (r) => r._field == "temperature")
+    |> filter(fn: (r) => r._field == "${temperature}")
   `;
 
     const rows1 = await queryApi.collectRows(query1);
@@ -25,7 +29,7 @@ export const GET = async () => {
     const query2 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
     |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
-    |> filter(fn: (r) => r._field == "energy")
+    |> filter(fn: (r) => r._field == "${energy}")
   `;
 
     const rows2 = await queryApi.collectRows(query2);
@@ -33,7 +37,7 @@ export const GET = async () => {
     const query3 = `
     from(bucket: "${process.env.INFLUX_BUCKET}")
     |> range(start: ${startDate.toISOString()}, stop: ${endDate.toISOString()})
-    |> filter(fn: (r) => r._field == "power")
+    |> filter(fn: (r) => r._field == "${power}")
   `;
 
     const rows3 = await queryApi.collectRows(query3);

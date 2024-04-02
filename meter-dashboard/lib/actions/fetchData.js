@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const fetchData = async () => {
+export const fetchData = async (temperature = 'temperature', energy = 'energy', power = 'power') => {
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   try {
     const res = await axios.get(`${baseUrl}/api/data`);
@@ -12,7 +12,7 @@ export const fetchData = async () => {
   }
 };
 
-export const fetchUnit = async () => {
+export const fetchUnit = async (temperature = 'temperature', energy = 'energy', power = 'power') => {
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   try {
     const res = await axios.get(`${baseUrl}/api/data`);
@@ -32,7 +32,7 @@ export const fetchUnit = async () => {
   }
 };
 
-export const fetchpower = async () => {
+export const fetchpower = async (temperature = 'temperature', energy = 'energy', power = 'power') => {
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
   try {
     const res = await axios.get(`${baseUrl}/api/data`);
