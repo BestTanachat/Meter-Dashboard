@@ -55,7 +55,8 @@ export default function Home() {
   };
 
   const isWithinTenMinutes = (datetimeString) => {
-    const [datePart, timePart] = datetimeString.split(' ');
+    if (datetimeString){
+      const [datePart, timePart] = datetimeString.split(' ');
     const [day, month, year] = datePart.split('-').map(Number);
     const [hour, minute, second] = timePart.split(':').map(Number);
     const inputDate = new Date(year, month - 1, day, hour, minute, second);
@@ -64,6 +65,11 @@ export default function Home() {
     const minutesDifference = Math.floor(timeDifference / (1000 * 60));
 
     return minutesDifference <= 1;
+    }
+    else{
+      return false;
+    }
+    
   }
 
   const formattedDatetime = datetime.map(dt => moment(dt).toDate());
